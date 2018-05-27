@@ -12,11 +12,11 @@ public class FlashCard {
 
     private String status;
 
-    private int createdAt;
+    private String createdAt;
 
-    private int lastModifiedAt;
+    private String lastModifiedAt;
 
-    public FlashCard(String id, String name, String definition, String status, int createdAt, int lastModifiedAt) {
+    public FlashCard(String id, String name, String definition, String status, String createdAt, String lastModifiedAt) {
         this.id = id;
         this.name = name;
         this.definition = definition;
@@ -84,19 +84,19 @@ public class FlashCard {
         this.status = status;
     }
 
-    public int getCreatedAt() {
+    public String getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(int createdAt) {
+    public void setCreatedAt(String createdAt) {
         this.createdAt = createdAt;
     }
 
-    public int getLastModifiedAt() {
+    public String getLastModifiedAt() {
         return lastModifiedAt;
     }
 
-    public void setLastModifiedAt(int lastModifiedAt) {
+    public void setLastModifiedAt(String lastModifiedAt) {
         this.lastModifiedAt = lastModifiedAt;
     }
 }

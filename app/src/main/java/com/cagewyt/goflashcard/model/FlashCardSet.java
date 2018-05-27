@@ -1,6 +1,7 @@
 package com.cagewyt.goflashcard.model;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Objects;
 
 public class FlashCardSet {
@@ -11,13 +12,13 @@ public class FlashCardSet {
 
     private String color;
 
-    private ArrayList<FlashCard> flashCards;
+    private HashMap<String, FlashCard> flashCards;
 
-    private int createdAt;
+    private String createdAt;
 
-    private int lastModifiedAt;
+    private String lastModifiedAt;
 
-    public FlashCardSet(String id, String name, String color, ArrayList<FlashCard> flashCards, int createdAt, int lastModifiedAt) {
+    public FlashCardSet(String id, String name, String color, HashMap<String, FlashCard> flashCards, String createdAt, String lastModifiedAt) {
         this.id = id;
         this.name = name;
         this.color = color;
@@ -75,27 +76,27 @@ public class FlashCardSet {
         this.color = color;
     }
 
-    public ArrayList<FlashCard> getFlashCards() {
+    public HashMap<String, FlashCard> getFlashCards() {
         return flashCards;
     }
 
-    public void setFlashCards(ArrayList<FlashCard> flashCards) {
+    public void setFlashCards(HashMap<String, FlashCard> flashCards) {
         this.flashCards = flashCards;
     }
 
-    public int getCreatedAt() {
+    public String getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(int createdAt) {
+    public void setCreatedAt(String createdAt) {
         this.createdAt = createdAt;
     }
 
-    public int getLastModifiedAt() {
+    public String getLastModifiedAt() {
         return lastModifiedAt;
     }
 
-    public void setLastModifiedAt(int lastModifiedAt) {
+    public void setLastModifiedAt(String lastModifiedAt) {
         this.lastModifiedAt = lastModifiedAt;
     }
 }

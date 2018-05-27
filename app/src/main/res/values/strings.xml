@@ -3,4 +3,6 @@
     <string name="action_settings">Settings</string>
     <string name="title_activity_add_card_set">AddCardSetActivity</string>
     <string name="title_activity_card_set_list">CardSetListActivity</string>
+    <string name="title_activity_card_list">CardListActivity</string>
+    <string name="title_activity_add_card">Add your card</string>
 </resources>

@@ -19,7 +19,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".CardListActivity" />
         <activity
             android:name=".AddCardSetActivity"
             android:label="@string/title_activity_add_card_set"
@@ -27,6 +26,14 @@
         <activity
             android:name=".CardSetListActivity"
             android:label="@string/title_activity_card_set_list"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".CardListActivity"
+            android:label="@string/title_activity_card_list"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".AddCardActivity"
+            android:label="@string/title_activity_add_card"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
