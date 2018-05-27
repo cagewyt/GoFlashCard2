@@ -56,6 +56,7 @@ public class AddCardActivity extends AppCompatActivity {
         newCardSet.child("lastModifiedAt").setValue(dateString);
 
         Intent addCardActivity = new Intent(AddCardActivity.this, CardListActivity.class);
+        addCardActivity.putExtra("flashCardSetId", flashCardSetId);
         startActivity(addCardActivity);
     }
 }
