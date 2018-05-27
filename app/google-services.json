@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "564999790361",
+    "firebase_url": "https://goflashcard.firebaseio.com",
+    "project_id": "goflashcard",
+    "storage_bucket": "goflashcard.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:564999790361:android:8ec91f81a638b52a",
+        "android_client_info": {
+          "package_name": "com.cagewyt.goflashcard"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "564999790361-jnn18p44v52cbnlpllt9s33p8sk46hjq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.cagewyt.goflashcard",
+            "certificate_hash": "d26c121553ee8131c73104e983d1861db4d77aca"
+          }
+        },
+        {
+          "client_id": "564999790361-vvgsrkt57svrk8u2ijr8ll6s3nlajmnn.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAWBimPH5dBhLUcht-dJgKSvADrwo9efkg"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "564999790361-vvgsrkt57svrk8u2ijr8ll6s3nlajmnn.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
