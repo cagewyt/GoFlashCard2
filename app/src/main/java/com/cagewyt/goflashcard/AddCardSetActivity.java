@@ -23,7 +23,6 @@ public class AddCardSetActivity extends AppCompatActivity implements AdapterView
     private String cardSetName = "No name";
 
     private FirebaseDatabase database;
-
     private DatabaseReference databaseReference;
 
     @Override
@@ -32,16 +31,6 @@ public class AddCardSetActivity extends AppCompatActivity implements AdapterView
         setContentView(R.layout.activity_add_card_set);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-
 
         Spinner spinner = (Spinner) findViewById(R.id.cardSetColor);
 // Create an ArrayAdapter using the string array and a default spinner layout

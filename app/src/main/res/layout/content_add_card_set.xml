@@ -20,7 +20,7 @@
         android:id="@+id/cardSetName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Enter a card set name"/>
+        android:hint="Enter a card set name" />
 
     <TextView
         android:id="@+id/textView2"
