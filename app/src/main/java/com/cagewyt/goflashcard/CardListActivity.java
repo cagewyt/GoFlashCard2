@@ -64,15 +64,16 @@ public class CardListActivity extends AppCompatActivity {
                 ) {
                     @Override
                     protected void populateViewHolder(CardListActivity.FlashCardViewHolder viewHolder, FlashCard model, int position) {
-                        final String flashCardSetKey = getRef(position).getKey().toString();
+                        final String flashCardId = getRef(position).getKey().toString();
 
                         viewHolder.setName(model.getName());
                         viewHolder.mView.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
-//                                Intent cardListActivity = new Intent(CardSetListActivity.this, CardListActivity.class);
-//                                cardListActivity.putExtra("flashCardSetId", flashCardSetKey);
-//                                startActivity(cardListActivity);
+                                Intent cardActivity = new Intent(CardListActivity.this, CardActivity.class);
+                                cardActivity.putExtra("flashCardSetId", flashCardSetId);
+                                cardActivity.putExtra("flashCardId", flashCardId);
+                                startActivity(cardActivity);
                             }
                         });
                     }

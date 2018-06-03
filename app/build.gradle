@@ -30,6 +30,7 @@ dependencies {
     implementation 'com.android.support:cardview-v7:26.1.0'
     implementation 'com.android.support:recyclerview-v7:26.1.0'
     implementation 'com.firebaseui:firebase-ui-database:0.4.4'
+    implementation 'com.wajahatkarim3.EasyFlipView:EasyFlipView:2.1.0'
 }
 
 apply plugin: 'com.google.gms.google-services'
