@@ -9,22 +9,52 @@
     tools:showIn="@layout/activity_card">
 
     <com.wajahatkarim3.easyflipview.EasyFlipView
+        android:id="@+id/easyFlipView"
         android:layout_width="match_parent"
         android:layout_height="400dp"
-        app:flipOnTouch="true"
-        app:flipEnabled="true"
         app:flipDuration="400"
-        app:flipType="vertical"
+        app:flipEnabled="true"
         app:flipFrom="front"
-        >
+        app:flipOnTouch="true"
+        app:flipType="vertical">
 
         <!-- Back Layout Goes Here -->
-        <include layout="@layout/flash_card_layout_back"/>
+        <include layout="@layout/flash_card_layout_back" />
 
         <!-- Front Layout Goes Here -->
-        <include layout="@layout/flash_card_layout_front"/>
+        <include layout="@layout/flash_card_layout_front" />
 
     </com.wajahatkarim3.easyflipview.EasyFlipView>
+
+    <Button
+        android:id="@+id/buttonUnknown"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="5dp"
+        android:background="#FF5733"
+        android:onClick="unknownClicked"
+        android:text="Unknown"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/buttonKnown"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/easyFlipView" />
+
+    <Button
+        android:id="@+id/buttonKnown"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="10dp"
+        android:background="#33FF57"
+        android:onClick="knownClicked"
+        android:text="Known"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/buttonUnknown"
+        app:layout_constraintTop_toBottomOf="@+id/easyFlipView" />
 
 
 </android.support.constraint.ConstraintLayout>
