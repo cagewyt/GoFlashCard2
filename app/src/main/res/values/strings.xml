@@ -6,4 +6,5 @@
     <string name="title_activity_card_list">CardListActivity</string>
     <string name="title_activity_add_card">Add your card</string>
     <string name="title_activity_card">CardActivity</string>
+    <string name="title_activity_result">ResultActivity</string>
 </resources>

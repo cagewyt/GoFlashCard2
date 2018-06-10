@@ -96,7 +96,9 @@ public class CardActivity extends AppCompatActivity {
         {
             // this is the last one
             // go to result page
-            // TODO: implement the result page
+            Intent resultActivity = new Intent(CardActivity.this, ResultActivity.class);
+            resultActivity.putExtra("flashCardSetId", flashCardSetId);
+            startActivity(resultActivity);
         }
         else
         {
