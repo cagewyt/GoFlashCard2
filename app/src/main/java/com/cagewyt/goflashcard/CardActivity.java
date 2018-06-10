@@ -16,11 +16,16 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class CardActivity extends AppCompatActivity {
     private String flashCardSetId;
-    private String flashCardId;
+
+    private ArrayList<String> flashCardIds;
+
+    private int currentCardIndex = -1;
 
     private TextView frontText;
     private TextView backText;
@@ -33,16 +38,22 @@ public class CardActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_card);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         if(flashCardSetId == null) {
             flashCardSetId = getIntent().getExtras().getString("flashCardSetId");
         }
 
-        if(flashCardId == null) {
-            flashCardId = getIntent().getExtras().getString("flashCardId");
+        if(flashCardIds == null) {
+            flashCardIds = getIntent().getExtras().getStringArrayList("flashCardIds");
         }
+
+        if(currentCardIndex == -1) {
+            currentCardIndex = getIntent().getExtras().getInt("currentCardIndex");
+        }
+
+        String flashCardId = flashCardIds.get(currentCardIndex);
 
         frontText = findViewById(R.id.cardFrontText);
         backText = findViewById(R.id.cardBackText);
@@ -75,14 +86,27 @@ public class CardActivity extends AppCompatActivity {
     private void updateCard(String unknown) {
         SimpleDateFormat sdf = new SimpleDateFormat("MMM MM dd, yyyy hh:mm a");
         String dateString = sdf.format(new Date());
-        databaseReference.child(flashCardId).child("lastModifiedAt").setValue(dateString);
 
+        String flashCardId = flashCardIds.get(currentCardIndex);
+
+        databaseReference.child(flashCardId).child("lastModifiedAt").setValue(dateString);
         databaseReference.child(flashCardId).child("status").setValue(unknown);
 
-        // Move to the next card.
-        flashCardId = "";
+        if(currentCardIndex == flashCardIds.size() - 1)
+        {
+            // this is the last one
+            // go to result page
+            // TODO: implement the result page
+        }
+        else
+        {
+            currentCardIndex++;
 
-        // reload this activity
-        this.recreate();
+            Intent cardActivity = new Intent(CardActivity.this, CardActivity.class);
+            cardActivity.putExtra("flashCardSetId", flashCardSetId);
+            cardActivity.putStringArrayListExtra("flashCardIds", flashCardIds);
+            cardActivity.putExtra("currentCardIndex", currentCardIndex);
+            startActivity(cardActivity);
+        }
     }
 }

@@ -14,11 +14,18 @@ import android.widget.TextView;
 import com.cagewyt.goflashcard.model.FlashCard;
 import com.cagewyt.goflashcard.model.FlashCardSet;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
 
 public class CardListActivity extends AppCompatActivity {
     private String flashCardSetId;
+    private ArrayList<String> flashCardIds;
+
     private RecyclerView cardListView;
     private DatabaseReference databaseReference;
 
@@ -49,6 +56,8 @@ public class CardListActivity extends AppCompatActivity {
         cardListView.setLayoutManager(new LinearLayoutManager(this));
 
         databaseReference = FirebaseDatabase.getInstance().getReference().child("FlashCardSets").child(flashCardSetId).child("flashCards");
+
+        flashCardIds = generateFlashCardIds();
     }
 
     @Override
@@ -66,13 +75,16 @@ public class CardListActivity extends AppCompatActivity {
                     protected void populateViewHolder(CardListActivity.FlashCardViewHolder viewHolder, FlashCard model, int position) {
                         final String flashCardId = getRef(position).getKey().toString();
 
+                        final int currentCardIndex = flashCardIds.indexOf(flashCardId);
+
                         viewHolder.setName(model.getName());
                         viewHolder.mView.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
                                 Intent cardActivity = new Intent(CardListActivity.this, CardActivity.class);
                                 cardActivity.putExtra("flashCardSetId", flashCardSetId);
-                                cardActivity.putExtra("flashCardId", flashCardId);
+                                cardActivity.putStringArrayListExtra("flashCardIds", flashCardIds);
+                                cardActivity.putExtra("currentCardIndex", currentCardIndex);
                                 startActivity(cardActivity);
                             }
                         });
@@ -80,6 +92,29 @@ public class CardListActivity extends AppCompatActivity {
                 };
 
         cardListView.setAdapter(firebaseRecyclerAdapter);
+    }
+
+    private ArrayList<String> generateFlashCardIds() {
+        // get list of FlashCardIds from database
+        final ArrayList<String> flashCardIds = new ArrayList<>();
+        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    for(DataSnapshot d : dataSnapshot.getChildren()) {
+                        flashCardIds.add(d.getKey());
+                    }
+                }
+            }//onDataChange
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+
+            }//onCancelled
+        });
+
+        // shuffle them
+        return flashCardIds;
     }
 
     public static class FlashCardViewHolder extends RecyclerView.ViewHolder{
