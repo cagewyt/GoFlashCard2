@@ -12,12 +12,16 @@ import android.view.MenuItem;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class MainActivity extends AppCompatActivity {
 
     private ListView mListView;
     private ArrayAdapter aAdapter;
-    private String[] buttons = { "My Progress", "My Flash Cards", "Recent Learned", "My Favourite"};
+    private String[] buttons = { "My Flash Cards", "Recent Learned", "My Favourite"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,29 +30,30 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-
-
-        mListView = (ListView) findViewById(R.id.dashboard_item_list);
-        aAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, buttons);
-        mListView.setAdapter(aAdapter);
-        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> a, View v, int position, long id) {
-                String buttonName = (String) mListView.getItemAtPosition(position);
-                if("My Flash Cards".equals(buttonName)) {
-                    Intent cardSetListActivity = new Intent(MainActivity.this, CardSetListActivity.class);
-                    startActivity(cardSetListActivity);
-                }
-            }
-        });
+//        Date today = new Date();
+//        SimpleDateFormat sdf = new SimpleDateFormat("EEEE");
+//        String day = sdf.format(today);
+//        TextView bannerDay = findViewById(R.id.bannerDay);
+//        bannerDay.setText(day);
+//
+//        SimpleDateFormat sdf2 = new SimpleDateFormat("MMM dd, yyy h:mm a");
+//        String date = sdf2.format(today);
+//        TextView bannerDate = findViewById(R.id.bannerDate);
+//        bannerDate.setText(date);
+//
+//        mListView = (ListView) findViewById(R.id.dashboard_item_list);
+//        aAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, buttons);
+//        mListView.setAdapter(aAdapter);
+//        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> a, View v, int position, long id) {
+//                String buttonName = (String) mListView.getItemAtPosition(position);
+//                if("My Flash Cards".equals(buttonName)) {
+//                    Intent cardSetListActivity = new Intent(MainActivity.this, CardSetListActivity.class);
+//                    startActivity(cardSetListActivity);
+//                }
+//            }
+//        });
     }
 
     @Override
