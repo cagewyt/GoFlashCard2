@@ -102,6 +102,11 @@ public class CardSetListActivity extends AppCompatActivity {
             TextView firstLetterView = mView.findViewById(R.id.cardFirstLetter);
             firstLetterView.setText(firstLetter);
 
+            if(name != null && name.length() > 20)
+            {
+                name = name.substring(0, 20) + " ...";
+            }
+
             TextView taskName = mView.findViewById(R.id.flashCardSetName);
             taskName.setText(name);
         }

@@ -39,7 +39,8 @@
             android:layout_margin="10dp"
             android:text="Football"
             android:textColor="#000000"
-            android:textSize="24dp" />
+            android:textSize="24dp"
+            android:maxLines="1"/>
 
         <View
             android:layout_width="0dp"
