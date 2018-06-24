@@ -77,4 +77,9 @@ public class MainActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+    public void myCardSetViewClicked(View view) {
+        Intent cardSetListActivity = new Intent(MainActivity.this, CardSetListActivity.class);
+        startActivity(cardSetListActivity);
+    }
 }
