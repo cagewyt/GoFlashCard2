@@ -1,10 +1,12 @@
 package com.cagewyt.goflashcard;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -62,6 +64,8 @@ public class CardSetListActivity extends AppCompatActivity {
                         final String flashCardSetKey = getRef(position).getKey().toString();
 
                         viewHolder.setName(model.getName());
+                        viewHolder.setColor(model.getColor());
+
                         viewHolder.mView.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
@@ -86,8 +90,45 @@ public class CardSetListActivity extends AppCompatActivity {
 
         public void setName(String name)
         {
-            TextView taskName = (TextView)mView.findViewById(R.id.flashCardSetName);
+            String firstLetter;
+            if(name == null || name.isEmpty())
+            {
+                firstLetter = "?";
+            }
+            else
+            {
+                firstLetter=name.substring(0,1).toUpperCase();
+            }
+            TextView firstLetterView = mView.findViewById(R.id.cardFirstLetter);
+            firstLetterView.setText(firstLetter);
+
+            TextView taskName = mView.findViewById(R.id.flashCardSetName);
             taskName.setText(name);
+        }
+
+        public void setColor(String color)
+        {
+            CardView cardView = mView.findViewById(R.id.cardDisk);
+            if("Blue".equals(color))
+            {
+                cardView.setCardBackgroundColor(Color.parseColor("#546de5"));
+            }
+            else if("Green".equals(color))
+            {
+                cardView.setCardBackgroundColor(Color.parseColor("#05c46b"));
+            }
+            else if("Pink".equals(color))
+            {
+                cardView.setCardBackgroundColor(Color.parseColor("#f78fb3"));
+            }
+            else if("Yellow".equals(color))
+            {
+                cardView.setCardBackgroundColor(Color.parseColor("#f5cd79"));
+            }
+            else
+            {
+                cardView.setCardBackgroundColor(Color.parseColor("#f5cd79"));
+            }
         }
     }
 }

@@ -3,7 +3,7 @@
     <string-array name="card_set_colors">
         <item>Yellow</item>
         <item>Blue</item>
-        <item>White</item>
+        <item>Green</item>
         <item>Pink</item>
     </string-array>
 </resources>
