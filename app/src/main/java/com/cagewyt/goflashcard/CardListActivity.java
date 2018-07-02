@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -53,7 +54,7 @@ public class CardListActivity extends AppCompatActivity {
 
         cardListView = (RecyclerView)findViewById(R.id.card_list);
         cardListView.setHasFixedSize(true);
-        cardListView.setLayoutManager(new LinearLayoutManager(this));
+        cardListView.setLayoutManager(new GridLayoutManager(this, 3));
 
         databaseReference = FirebaseDatabase.getInstance().getReference().child("FlashCardSets").child(flashCardSetId).child("flashCards");
 
@@ -67,7 +68,7 @@ public class CardListActivity extends AppCompatActivity {
         FirebaseRecyclerAdapter<FlashCard, CardListActivity.FlashCardViewHolder> firebaseRecyclerAdapter =
                 new FirebaseRecyclerAdapter<FlashCard, CardListActivity.FlashCardViewHolder>(
                         FlashCard.class,
-                        R.layout.flashcard_row,
+                        R.layout.flashcard_cell,
                         CardListActivity.FlashCardViewHolder.class,
                         databaseReference
                 ) {

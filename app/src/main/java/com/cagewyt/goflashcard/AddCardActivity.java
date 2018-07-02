@@ -75,9 +75,7 @@ public class AddCardActivity extends AppCompatActivity {
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
             return;
         }
-        cardName = cardDefinition.trim();
-
-
+        cardDefinition = cardDefinition.trim();
 
         databaseReference = FirebaseDatabase.getInstance()
                 .getReference()
