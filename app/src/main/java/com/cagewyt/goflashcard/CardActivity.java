@@ -1,10 +1,13 @@
 package com.cagewyt.goflashcard;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.TextView;
@@ -22,6 +25,7 @@ import java.util.List;
 
 public class CardActivity extends AppCompatActivity {
     private String flashCardSetId;
+    private String flashCardSetColor;
 
     private ArrayList<String> flashCardIds;
 
@@ -29,6 +33,8 @@ public class CardActivity extends AppCompatActivity {
 
     private TextView frontText;
     private TextView backText;
+    private CardView frontView;
+    private CardView backView;
 
     private DatabaseReference databaseReference;
 
@@ -38,11 +44,12 @@ public class CardActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_card);
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
         if(flashCardSetId == null) {
             flashCardSetId = getIntent().getExtras().getString("flashCardSetId");
+        }
+
+        if(flashCardSetColor == null) {
+            flashCardSetColor = getIntent().getExtras().getString("flashCardSetColor");
         }
 
         if(flashCardIds == null) {
@@ -53,7 +60,31 @@ public class CardActivity extends AppCompatActivity {
             currentCardIndex = getIntent().getExtras().getInt("currentCardIndex");
         }
 
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        toolbar.setNavigationIcon(R.drawable.ic_action_arrow_left);
+
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent cardListActivity = new Intent(CardActivity.this, CardListActivity.class);
+                cardListActivity.putExtra("flashCardSetId", flashCardSetId);
+                startActivity(cardListActivity);
+            }
+        });
+
+        ActionBar ab = getSupportActionBar();
+
+        // Enable the Up button
+        ab.setDisplayHomeAsUpEnabled(true);
+
         String flashCardId = flashCardIds.get(currentCardIndex);
+
+        frontView = findViewById(R.id.cardFrontBackground);
+        setColor(frontView, flashCardSetColor);
+        backView = findViewById(R.id.cardBackBackground);
+        setColor(backView, flashCardSetColor);
 
         frontText = findViewById(R.id.cardFrontText);
         backText = findViewById(R.id.cardBackText);
@@ -109,6 +140,30 @@ public class CardActivity extends AppCompatActivity {
             cardActivity.putStringArrayListExtra("flashCardIds", flashCardIds);
             cardActivity.putExtra("currentCardIndex", currentCardIndex);
             startActivity(cardActivity);
+        }
+    }
+
+    public void setColor(CardView cardView, String color)
+    {
+        if("Blue".equals(color))
+        {
+            cardView.setCardBackgroundColor(Color.parseColor("#546de5"));
+        }
+        else if("Green".equals(color))
+        {
+            cardView.setCardBackgroundColor(Color.parseColor("#05c46b"));
+        }
+        else if("Pink".equals(color))
+        {
+            cardView.setCardBackgroundColor(Color.parseColor("#f78fb3"));
+        }
+        else if("Yellow".equals(color))
+        {
+            cardView.setCardBackgroundColor(Color.parseColor("#f5cd79"));
+        }
+        else
+        {
+            cardView.setCardBackgroundColor(Color.parseColor("#f5cd79"));
         }
     }
 }

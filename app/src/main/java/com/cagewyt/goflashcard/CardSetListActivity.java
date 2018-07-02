@@ -46,6 +46,8 @@ public class CardSetListActivity extends AppCompatActivity {
         cardSetListView.setLayoutManager(new LinearLayoutManager(this));
 
         databaseReference = FirebaseDatabase.getInstance().getReference().child("FlashCardSets");
+
+        CardSetListActivity.this.setTitle("Select a card set");
     }
 
     @Override

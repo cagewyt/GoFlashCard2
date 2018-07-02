@@ -31,6 +31,7 @@ public class AddCardActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         flashCardSetId = getIntent().getExtras().getString("flashCardSetId");
+        AddCardActivity.this.setTitle("Add a card");
     }
 
     public void saveButtonClicked(View view) {

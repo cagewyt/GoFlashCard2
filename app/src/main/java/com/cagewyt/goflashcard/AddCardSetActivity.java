@@ -45,6 +45,8 @@ public class AddCardSetActivity extends AppCompatActivity implements AdapterView
         spinner.setOnItemSelectedListener(this);
 
         database = FirebaseDatabase.getInstance();
+
+        AddCardSetActivity.this.setTitle("Create a card set");
     }
 
     @Override

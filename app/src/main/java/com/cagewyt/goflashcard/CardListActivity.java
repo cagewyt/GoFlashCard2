@@ -1,15 +1,18 @@
 package com.cagewyt.goflashcard;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.cagewyt.goflashcard.model.FlashCard;
@@ -25,6 +28,8 @@ import java.util.ArrayList;
 
 public class CardListActivity extends AppCompatActivity {
     private String flashCardSetId;
+    private String flashCardSetColor;
+
     private ArrayList<String> flashCardIds;
 
     private RecyclerView cardListView;
@@ -34,7 +39,7 @@ public class CardListActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_card_list);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         flashCardSetId = getIntent().getExtras().getString("flashCardSetId");
@@ -56,9 +61,25 @@ public class CardListActivity extends AppCompatActivity {
         cardListView.setHasFixedSize(true);
         cardListView.setLayoutManager(new GridLayoutManager(this, 3));
 
-        databaseReference = FirebaseDatabase.getInstance().getReference().child("FlashCardSets").child(flashCardSetId).child("flashCards");
+        databaseReference = FirebaseDatabase.getInstance().getReference().child("FlashCardSets").child(flashCardSetId);
+
+        databaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists())
+                {
+                    FlashCardSet flashCardSet = dataSnapshot.getValue(FlashCardSet.class);
+                    flashCardSetColor = flashCardSet.getColor();
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
 
         flashCardIds = generateFlashCardIds();
+
+        CardListActivity.this.setTitle("Click a card to start");
     }
 
     @Override
@@ -70,7 +91,7 @@ public class CardListActivity extends AppCompatActivity {
                         FlashCard.class,
                         R.layout.flashcard_cell,
                         CardListActivity.FlashCardViewHolder.class,
-                        databaseReference
+                        databaseReference.child("flashCards")
                 ) {
                     @Override
                     protected void populateViewHolder(CardListActivity.FlashCardViewHolder viewHolder, FlashCard model, int position) {
@@ -79,11 +100,15 @@ public class CardListActivity extends AppCompatActivity {
                         final int currentCardIndex = flashCardIds.indexOf(flashCardId);
 
                         viewHolder.setName(model.getName());
+                        viewHolder.setStatusIcon(model.getStatus());
+                        viewHolder.setColor(flashCardSetColor);
+
                         viewHolder.mView.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
                                 Intent cardActivity = new Intent(CardListActivity.this, CardActivity.class);
                                 cardActivity.putExtra("flashCardSetId", flashCardSetId);
+                                cardActivity.putExtra("flashCardSetColor", flashCardSetColor);
                                 cardActivity.putStringArrayListExtra("flashCardIds", flashCardIds);
                                 cardActivity.putExtra("currentCardIndex", currentCardIndex);
                                 startActivity(cardActivity);
@@ -98,7 +123,7 @@ public class CardListActivity extends AppCompatActivity {
     private ArrayList<String> generateFlashCardIds() {
         // get list of FlashCardIds from database
         final ArrayList<String> flashCardIds = new ArrayList<>();
-        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+        databaseReference.child("flashCards").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
@@ -128,8 +153,45 @@ public class CardListActivity extends AppCompatActivity {
 
         public void setName(String name)
         {
-            TextView taskName = (TextView)mView.findViewById(R.id.flashCardName);
+            TextView taskName = mView.findViewById(R.id.flashCardName);
             taskName.setText(name);
+        }
+
+        public void setStatusIcon(String cardStatus)
+        {
+            ImageView imageView = mView.findViewById(R.id.cardStatusIcon);
+            if("Known".equalsIgnoreCase(cardStatus))
+            {
+                imageView.setImageResource(R.drawable.ic_done);
+            }
+            else {
+                imageView.setImageResource(R.drawable.ic_clear);
+            }
+        }
+
+        public void setColor(String color)
+        {
+            CardView cardView = mView.findViewById(R.id.flashCardBackground);
+            if("Blue".equals(color))
+            {
+                cardView.setCardBackgroundColor(Color.parseColor("#546de5"));
+            }
+            else if("Green".equals(color))
+            {
+                cardView.setCardBackgroundColor(Color.parseColor("#05c46b"));
+            }
+            else if("Pink".equals(color))
+            {
+                cardView.setCardBackgroundColor(Color.parseColor("#f78fb3"));
+            }
+            else if("Yellow".equals(color))
+            {
+                cardView.setCardBackgroundColor(Color.parseColor("#f5cd79"));
+            }
+            else
+            {
+                cardView.setCardBackgroundColor(Color.parseColor("#f5cd79"));
+            }
         }
     }
 }

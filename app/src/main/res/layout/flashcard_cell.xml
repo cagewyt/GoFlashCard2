@@ -8,17 +8,17 @@
     android:weightSum="10">
 
     <android.support.v7.widget.CardView
+        android:id="@+id/flashCardBackground"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_margin="10dp"
         android:layout_weight="10"
-        android:onClick="myCardSetViewClicked"
         app:cardBackgroundColor="#ff9f43"
         app:cardCornerRadius="8dp"
         app:cardElevation="8dp">
 
-
         <ImageView
+            android:id="@+id/cardStatusIcon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="top|right"
@@ -33,7 +33,7 @@
             android:gravity="center"
             android:text="Football"
             android:textColor="#000000"
-            android:textSize="35dp" />
+            android:textSize="20dp" />
 
     </android.support.v7.widget.CardView>
 
