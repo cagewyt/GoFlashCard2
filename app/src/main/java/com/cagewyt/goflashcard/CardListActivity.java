@@ -28,9 +28,11 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class CardListActivity extends AppCompatActivity {
+    private String from;
     private String flashCardSetId;
     private String flashCardSetColor;
 
@@ -46,36 +48,45 @@ public class CardListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_card_list);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        flashCardSetId = getIntent().getExtras().getString("flashCardSetId");
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent addCardActivity = new Intent(CardListActivity.this, AddCardActivity.class);
-                addCardActivity.putExtra("flashCardSetId", flashCardSetId);
-                startActivity(addCardActivity);
-            }
-        });
-
         CardListActivity.this.setTitle("Click a card to start");
 
-        databaseReference = FirebaseDatabase.getInstance().getReference().child("FlashCardSets").child(flashCardSetId);
-        databaseReference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists())
-                {
-                    FlashCardSet flashCardSet = dataSnapshot.getValue(FlashCardSet.class);
-                    flashCardSetColor = flashCardSet.getColor();
-                }
-            }
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-            }
-        });
+        from = getIntent().getExtras().getString("from");
+        flashCardSetId = getIntent().getExtras().getString("flashCardSetId");
+        flashCardSetColor = getIntent().getExtras().getString("flashCardSetColor");
 
+        FloatingActionButton fab = findViewById(R.id.fab);
+        if(flashCardSetId != null) {
+            fab.show();
+            fab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent addCardActivity = new Intent(CardListActivity.this, AddCardActivity.class);
+                    addCardActivity.putExtra("flashCardSetId", flashCardSetId);
+                    startActivity(addCardActivity);
+                }
+            });
+        }
+        else
+        {
+            fab.hide();
+        }
+
+        if(flashCardSetId != null) {
+            databaseReference = FirebaseDatabase.getInstance().getReference().child("FlashCardSets").child(flashCardSetId);
+            databaseReference.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.exists()) {
+                        FlashCardSet flashCardSet = dataSnapshot.getValue(FlashCardSet.class);
+                        flashCardSetColor = flashCardSet.getColor();
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                }
+            });
+        }
 
         cardListView = findViewById(R.id.card_list);
         cardListView.setHasFixedSize(true);
@@ -89,70 +100,72 @@ public class CardListActivity extends AppCompatActivity {
         cardListViewAdapter.notifyDataSetChanged();
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-
-//        FirebaseRecyclerAdapter<FlashCard, CardListActivity.FlashCardViewHolder> firebaseRecyclerAdapter =
-//                new FirebaseRecyclerAdapter<FlashCard, CardListActivity.FlashCardViewHolder>(
-//                        FlashCard.class,
-//                        R.layout.flashcard_cell,
-//                        CardListActivity.FlashCardViewHolder.class,
-//                        databaseReference.child("flashCards")
-//                ) {
-//                    @Override
-//                    protected void populateViewHolder(CardListActivity.FlashCardViewHolder viewHolder, FlashCard model, int position) {
-//                        final String flashCardId = getRef(position).getKey().toString();
-//
-//                        final int currentCardIndex = flashCardIds.indexOf(flashCardId);
-//
-//                        viewHolder.setName(model.getName());
-//                        viewHolder.setStatusIcon(model.getStatus());
-//                        viewHolder.setColor(flashCardSetColor);
-//
-//                        viewHolder.mView.setOnClickListener(new View.OnClickListener() {
-//                            @Override
-//                            public void onClick(View view) {
-//                                Intent cardActivity = new Intent(CardListActivity.this, CardActivity.class);
-//                                cardActivity.putExtra("flashCardSetId", flashCardSetId);
-//                                cardActivity.putExtra("flashCardSetColor", flashCardSetColor);
-//                                cardActivity.putStringArrayListExtra("flashCardIds", flashCardIds);
-//                                cardActivity.putExtra("currentCardIndex", currentCardIndex);
-//                                startActivity(cardActivity);
-//                            }
-//                        });
-//                    }
-//                };
-
-//        cardListView.setAdapter(firebaseRecyclerAdapter);
-
-
-    }
-
     private void generateFlashCardList() {
-        // get list of FlashCardIds from database
-        databaseReference.child("flashCards").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists()) {
-                    for(DataSnapshot d : dataSnapshot.getChildren()) {
-                        String flashCardId = d.getKey();
-                        FlashCard flashCard = d.getValue(FlashCard.class);
-                        flashCard.setId(flashCardId);
-                        flashCardList.add(flashCard);
-
-                        cardListViewAdapter.notifyDataSetChanged();
+        if(flashCardSetId != null)
+        {
+            databaseReference = FirebaseDatabase.getInstance().getReference().child("FlashCardSets").child(flashCardSetId).child("flashCards");
+            // get list of FlashCardIds from database
+            databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.exists()) {
+                        for(DataSnapshot d : dataSnapshot.getChildren()) {
+                            String flashCardId = d.getKey();
+                            FlashCard flashCard = d.getValue(FlashCard.class);
+                            flashCard.setId(flashCardId);
+                            flashCard.setFlashCardSetId(flashCardSetId);
+                            flashCardList.add(flashCard);
+                            cardListViewAdapter.notifyDataSetChanged();
+                        }
                     }
-                }
-            }//onDataChange
+                }//onDataChange
+                @Override
+                public void onCancelled(DatabaseError error) {
 
-            @Override
-            public void onCancelled(DatabaseError error) {
+                }//onCancelled
+            });
+        }
+        else
+        {
+            // load all cards based on the "from"
+            databaseReference = FirebaseDatabase.getInstance().getReference().child("FlashCardSets");
+            databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.exists()) {
+                        for(DataSnapshot d : dataSnapshot.getChildren()) {
+                            String flashCardSetId = d.getKey();
+                            FlashCardSet flashCardSet = d.getValue(FlashCardSet.class);
+                            flashCardSet.setId(flashCardSetId);
+                            if(flashCardSet.getFlashCards() != null) {
 
-            }//onCancelled
-        });
+                                for(String key : flashCardSet.getFlashCards().keySet()) {
+                                    FlashCard card = flashCardSet.getFlashCards().get(key);
+                                    card.setId(key);
 
-        // shuffle them
+                                    card.setFlashCardSetId(flashCardSetId);
+
+                                    if ("unknownCards".equalsIgnoreCase(from) && "Unknown".equalsIgnoreCase(card.getStatus())) {
+                                        flashCardList.add(card);
+                                    } else if ("favouriteCards".equalsIgnoreCase(from) && card.isFavourite()) {
+                                        flashCardList.add(card);
+                                    } else if ("azCards".equalsIgnoreCase(from)) {
+                                        flashCardList.add(card);
+                                        Collections.sort(flashCardList);
+                                    }
+                                }
+
+                                cardListViewAdapter.notifyDataSetChanged();
+                            }
+                        }
+                    }
+                }//onDataChange
+                @Override
+                public void onCancelled(DatabaseError error) {
+
+                }//onCancelled
+            });
+        }
     }
 
     class CardListViewAdapter extends RecyclerView.Adapter<FlashCardViewHolder> {
@@ -192,7 +205,7 @@ public class CardListActivity extends AppCompatActivity {
                     Intent cardActivity = new Intent(CardListActivity.this, CardActivity.class);
                     cardActivity.putExtra("flashCardSetId", flashCardSetId);
                     cardActivity.putExtra("flashCardSetColor", flashCardSetColor);
-                    //cardActivity.putStringArrayListExtra("flashCardIds", flashCardIds);
+                    cardActivity.putExtra("flashCardList", (ArrayList)flashCardList);
                     cardActivity.putExtra("currentCardIndex", currentCardIndex);
                     startActivity(cardActivity);
                 }

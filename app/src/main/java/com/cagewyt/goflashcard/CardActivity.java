@@ -3,8 +3,6 @@ package com.cagewyt.goflashcard;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
@@ -12,6 +10,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.TextView;
 
+import com.cagewyt.goflashcard.model.FlashCard;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -21,13 +20,12 @@ import com.google.firebase.database.ValueEventListener;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 public class CardActivity extends AppCompatActivity {
     private String flashCardSetId;
     private String flashCardSetColor;
 
-    private ArrayList<String> flashCardIds;
+    private ArrayList<FlashCard> flashCardList;
 
     private int currentCardIndex = -1;
 
@@ -52,8 +50,8 @@ public class CardActivity extends AppCompatActivity {
             flashCardSetColor = getIntent().getExtras().getString("flashCardSetColor");
         }
 
-        if(flashCardIds == null) {
-            flashCardIds = getIntent().getExtras().getStringArrayList("flashCardIds");
+        if(flashCardList == null) {
+            flashCardList = (ArrayList<FlashCard>) getIntent().getSerializableExtra("flashCardList");
         }
 
         if(currentCardIndex == -1) {
@@ -79,7 +77,7 @@ public class CardActivity extends AppCompatActivity {
         // Enable the Up button
         ab.setDisplayHomeAsUpEnabled(true);
 
-        String flashCardId = flashCardIds.get(currentCardIndex);
+        String flashCardId = flashCardList.get(currentCardIndex).getId();
 
         frontView = findViewById(R.id.cardFrontBackground);
         setColor(frontView, flashCardSetColor);
@@ -89,21 +87,28 @@ public class CardActivity extends AppCompatActivity {
         frontText = findViewById(R.id.cardFrontText);
         backText = findViewById(R.id.cardBackText);
 
-        databaseReference = FirebaseDatabase.getInstance().getReference().child("FlashCardSets").child(flashCardSetId).child("flashCards");
-        databaseReference.child(flashCardId).addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                String name = (String) dataSnapshot.child("name").getValue();
-                String definition = (String) dataSnapshot.child("definition").getValue();
-                frontText.setText(name);
-                backText.setText(definition);
-            }
+        if(flashCardSetId != null) {
+            databaseReference = FirebaseDatabase.getInstance().getReference().child("FlashCardSets").child(flashCardSetId).child("flashCards");
+            databaseReference.child(flashCardId).addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    String name = (String) dataSnapshot.child("name").getValue();
+                    String definition = (String) dataSnapshot.child("definition").getValue();
+                    frontText.setText(name);
+                    backText.setText(definition);
+                }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
 
-            }
-        });
+                }
+            });
+        }
+        else
+        {
+            frontText.setText(flashCardList.get(currentCardIndex).getName());
+            backText.setText(flashCardList.get(currentCardIndex).getDefinition());
+        }
     }
 
     public void unknownClicked(View view) {
@@ -118,17 +123,26 @@ public class CardActivity extends AppCompatActivity {
         SimpleDateFormat sdf = new SimpleDateFormat("MMM MM dd, yyyy hh:mm a");
         String dateString = sdf.format(new Date());
 
-        String flashCardId = flashCardIds.get(currentCardIndex);
+        String flashCardId = flashCardList.get(currentCardIndex).getId();
 
+        if(flashCardSetId != null) {
+            databaseReference = FirebaseDatabase.getInstance().getReference().child("FlashCardSets").child(flashCardSetId).child("flashCards");
+        }
+        else
+        {
+            databaseReference = FirebaseDatabase.getInstance().getReference().child("FlashCardSets").child(flashCardList.get(currentCardIndex).getFlashCardSetId()).child("flashCards");
+        }
         databaseReference.child(flashCardId).child("lastModifiedAt").setValue(dateString);
         databaseReference.child(flashCardId).child("status").setValue(unknown);
+        flashCardList.get(currentCardIndex).setStatus(unknown);
 
-        if(currentCardIndex == flashCardIds.size() - 1)
+        if(currentCardIndex == flashCardList.size() - 1)
         {
             // this is the last one
             // go to result page
             Intent resultActivity = new Intent(CardActivity.this, ResultActivity.class);
             resultActivity.putExtra("flashCardSetId", flashCardSetId);
+            resultActivity.putExtra("flashCardList", (ArrayList)flashCardList);
             startActivity(resultActivity);
         }
         else
@@ -137,7 +151,7 @@ public class CardActivity extends AppCompatActivity {
 
             Intent cardActivity = new Intent(CardActivity.this, CardActivity.class);
             cardActivity.putExtra("flashCardSetId", flashCardSetId);
-            cardActivity.putStringArrayListExtra("flashCardIds", flashCardIds);
+            cardActivity.putExtra("flashCardList", (ArrayList)flashCardList);
             cardActivity.putExtra("currentCardIndex", currentCardIndex);
             startActivity(cardActivity);
         }

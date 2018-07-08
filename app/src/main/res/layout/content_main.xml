@@ -85,6 +85,7 @@
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
             android:layout_rowWeight="1"
+            android:onClick="favouriteCardsViewClicked"
             app:cardBackgroundColor="#10ac84"
             app:cardCornerRadius="8dp"
             app:cardElevation="8dp">
@@ -122,6 +123,7 @@
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
             android:layout_rowWeight="1"
+            android:onClick="unknownCardsViewClicked"
             app:cardBackgroundColor="#ee5253"
             app:cardCornerRadius="8dp"
             app:cardElevation="8dp">
@@ -159,6 +161,7 @@
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
             android:layout_rowWeight="1"
+            android:onClick="azCardsViewClicked"
             app:cardBackgroundColor="#5f27cd"
             app:cardCornerRadius="8dp"
             app:cardElevation="8dp">
@@ -179,7 +182,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Recent Cards"
+                    android:text="A - Z Cards"
                     android:textAlignment="center"
                     android:textColor="@android:color/white"
                     android:textSize="18sp"

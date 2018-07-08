@@ -19,10 +19,6 @@ import java.util.Date;
 
 public class MainActivity extends AppCompatActivity {
 
-    private ListView mListView;
-    private ArrayAdapter aAdapter;
-    private String[] buttons = { "My Flash Cards", "Recent Learned", "My Favourite"};
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -79,7 +75,26 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void myCardSetViewClicked(View view) {
-        Intent cardSetListActivity = new Intent(MainActivity.this, CardSetListActivity.class);
-        startActivity(cardSetListActivity);
+        Intent intent = new Intent(MainActivity.this, CardSetListActivity.class);
+        intent.putExtra("from", "myCards");
+        startActivity(intent);
+    }
+
+    public void unknownCardsViewClicked(View view) {
+        Intent intent = new Intent(MainActivity.this, CardListActivity.class);
+        intent.putExtra("from", "unknownCards");
+        startActivity(intent);
+    }
+
+    public void favouriteCardsViewClicked(View view) {
+        Intent intent = new Intent(MainActivity.this, CardListActivity.class);
+        intent.putExtra("from", "favouriteCards");
+        startActivity(intent);
+    }
+
+    public void azCardsViewClicked(View view) {
+        Intent intent = new Intent(MainActivity.this, CardListActivity.class);
+        intent.putExtra("from", "azCards");
+        startActivity(intent);
     }
 }

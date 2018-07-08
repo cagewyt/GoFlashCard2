@@ -5,17 +5,19 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.widget.TextView;
 
+import com.cagewyt.goflashcard.model.FlashCard;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class ResultActivity extends AppCompatActivity {
     private String flashCardSetId;
-    private DatabaseReference databaseReference;
+    private ArrayList<FlashCard> flashCardList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,61 +27,96 @@ public class ResultActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         flashCardSetId = getIntent().getExtras().getString("flashCardSetId");
-        databaseReference = FirebaseDatabase.getInstance().getReference().child("FlashCardSets").child(flashCardSetId).child("flashCards");
+
+        flashCardList = (ArrayList<FlashCard>) getIntent().getSerializableExtra("flashCardList");
+
 
         TextView knownPercentageText = findViewById(R.id.knownPercentage);
 
         calculateKnownPercentage(knownPercentageText);
     }
 
-    private void calculateKnownPercentage(final TextView knownPercentageText) {
+    private void calculateKnownPercentage(final TextView knownPercentageText)
+    {
+        int total = flashCardList.size();
+        int knownCount = 0;
+        for(FlashCard card : flashCardList)
+        {
+            if("Known".equalsIgnoreCase(card.getStatus()))
+            {
+                knownCount++;
+            }
+        }
+        if(total == 0)
+        {
+            knownPercentageText.setText("100%");
+            return;
+        }
 
-        final int[] knownCount = {0};
-        final int[] total = {0};
-        databaseReference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists()) {
-                    for(DataSnapshot d : dataSnapshot.getChildren()) {
-                        HashMap value = (HashMap)(d.getValue());
-                        String status = (String)(value.get("status"));
+        if(knownCount == total)
+        {
+            knownPercentageText.setText("100%");
+            return;
+        }
 
-                        if("Known".equals(status))
-                        {
-                            knownCount[0]++;
-                        }
+        long percentage = Math.round(knownCount * 100.0 / total);
+        if(percentage == 100)
+        {
+            // due to round up
+            percentage = 99;
+        }
 
-                        total[0]++;
-                    }
-                    if(total[0] == 0)
-                    {
-                        knownPercentageText.setText("100%");
-                        return;
-                    }
-
-                    if(knownCount[0] == total[0])
-                    {
-                        knownPercentageText.setText("100%");
-                        return;
-                    }
-
-                    long percentage = Math.round(knownCount[0] * 100.0 / total[0]);
-                    if(percentage == 100)
-                    {
-                        // due to round up
-                        percentage = 99;
-                    }
-
-                    knownPercentageText.setText((int)percentage+"%");
-                    return;
-                }
-
-            }//onDataChange
-
-            @Override
-            public void onCancelled(DatabaseError error) {
-
-            }//onCancelled
-        });
+        knownPercentageText.setText((int)percentage+"%");
+        return;
     }
+//    private void calculateKnownPercentage(final TextView knownPercentageText) {
+//
+//        final int[] knownCount = {0};
+//        final int[] total = {0};
+//        databaseReference.addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//                if (dataSnapshot.exists()) {
+//                    for(DataSnapshot d : dataSnapshot.getChildren()) {
+//                        HashMap value = (HashMap)(d.getValue());
+//                        String status = (String)(value.get("status"));
+//
+//                        if("Known".equals(status))
+//                        {
+//                            knownCount[0]++;
+//                        }
+//
+//                        total[0]++;
+//                    }
+//                    if(total[0] == 0)
+//                    {
+//                        knownPercentageText.setText("100%");
+//                        return;
+//                    }
+//
+//                    if(knownCount[0] == total[0])
+//                    {
+//                        knownPercentageText.setText("100%");
+//                        return;
+//                    }
+//
+//                    long percentage = Math.round(knownCount[0] * 100.0 / total[0]);
+//                    if(percentage == 100)
+//                    {
+//                        // due to round up
+//                        percentage = 99;
+//                    }
+//
+//                    knownPercentageText.setText((int)percentage+"%");
+//                    return;
+//                }
+//
+//            }//onDataChange
+//
+//            @Override
+//            public void onCancelled(DatabaseError error) {
+//
+//            }//onCancelled
+//        });
+//    }
 }

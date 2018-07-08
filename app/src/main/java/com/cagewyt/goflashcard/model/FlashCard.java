@@ -1,8 +1,13 @@
 package com.cagewyt.goflashcard.model;
 
+import android.support.annotation.NonNull;
+
+import java.io.Serializable;
 import java.util.Objects;
 
-public class FlashCard {
+public class FlashCard implements Comparable<FlashCard>, Serializable{
+
+    private static final long serialVersionUID = -403250971215465050L;
 
     private String id;
 
@@ -12,17 +17,23 @@ public class FlashCard {
 
     private String status;
 
+    private boolean favourite;
+
     private String createdAt;
 
     private String lastModifiedAt;
 
-    public FlashCard(String id, String name, String definition, String status, String createdAt, String lastModifiedAt) {
+    private String flashCardSetId;
+
+    public FlashCard(String id, String name, String definition, String status, boolean favourite, String createdAt, String lastModifiedAt, String flashCardSetId) {
         this.id = id;
         this.name = name;
         this.definition = definition;
         this.status = status;
+        this.favourite = favourite;
         this.createdAt = createdAt;
         this.lastModifiedAt = lastModifiedAt;
+        this.flashCardSetId = flashCardSetId;
     }
 
     public FlashCard() {
@@ -98,5 +109,26 @@ public class FlashCard {
 
     public void setLastModifiedAt(String lastModifiedAt) {
         this.lastModifiedAt = lastModifiedAt;
+    }
+
+    public boolean isFavourite() {
+        return favourite;
+    }
+
+    public void setFavourite(boolean favourite) {
+        this.favourite = favourite;
+    }
+
+    public String getFlashCardSetId() {
+        return flashCardSetId;
+    }
+
+    public void setFlashCardSetId(String flashCardSetId) {
+        this.flashCardSetId = flashCardSetId;
+    }
+
+    @Override
+    public int compareTo(@NonNull FlashCard flashCard) {
+        return this.name.toUpperCase().compareTo(flashCard.name.toUpperCase());
     }
 }
