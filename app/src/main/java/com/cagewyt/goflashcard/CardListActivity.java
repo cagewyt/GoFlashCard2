@@ -7,11 +7,14 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
+import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -25,14 +28,16 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class CardListActivity extends AppCompatActivity {
     private String flashCardSetId;
     private String flashCardSetColor;
 
-    private ArrayList<String> flashCardIds;
+    private List<FlashCard> flashCardList = new ArrayList<>();
 
     private RecyclerView cardListView;
+    private CardListViewAdapter cardListViewAdapter;
     private DatabaseReference databaseReference;
 
     @Override
@@ -48,21 +53,15 @@ public class CardListActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
-
                 Intent addCardActivity = new Intent(CardListActivity.this, AddCardActivity.class);
                 addCardActivity.putExtra("flashCardSetId", flashCardSetId);
                 startActivity(addCardActivity);
             }
         });
 
-        cardListView = (RecyclerView)findViewById(R.id.card_list);
-        cardListView.setHasFixedSize(true);
-        cardListView.setLayoutManager(new GridLayoutManager(this, 3));
+        CardListActivity.this.setTitle("Click a card to start");
 
         databaseReference = FirebaseDatabase.getInstance().getReference().child("FlashCardSets").child(flashCardSetId);
-
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -77,58 +76,72 @@ public class CardListActivity extends AppCompatActivity {
             }
         });
 
-        flashCardIds = generateFlashCardIds();
 
-        CardListActivity.this.setTitle("Click a card to start");
+        cardListView = findViewById(R.id.card_list);
+        cardListView.setHasFixedSize(true);
+        cardListView.setLayoutManager(new GridLayoutManager(this, 3));
+        cardListView.setItemAnimator(new DefaultItemAnimator());
+
+        cardListViewAdapter = new CardListViewAdapter(flashCardList, flashCardSetId, flashCardSetColor);
+        cardListView.setAdapter(cardListViewAdapter);
+
+        generateFlashCardList();
+        cardListViewAdapter.notifyDataSetChanged();
     }
 
     @Override
     protected void onStart() {
         super.onStart();
 
-        FirebaseRecyclerAdapter<FlashCard, CardListActivity.FlashCardViewHolder> firebaseRecyclerAdapter =
-                new FirebaseRecyclerAdapter<FlashCard, CardListActivity.FlashCardViewHolder>(
-                        FlashCard.class,
-                        R.layout.flashcard_cell,
-                        CardListActivity.FlashCardViewHolder.class,
-                        databaseReference.child("flashCards")
-                ) {
-                    @Override
-                    protected void populateViewHolder(CardListActivity.FlashCardViewHolder viewHolder, FlashCard model, int position) {
-                        final String flashCardId = getRef(position).getKey().toString();
+//        FirebaseRecyclerAdapter<FlashCard, CardListActivity.FlashCardViewHolder> firebaseRecyclerAdapter =
+//                new FirebaseRecyclerAdapter<FlashCard, CardListActivity.FlashCardViewHolder>(
+//                        FlashCard.class,
+//                        R.layout.flashcard_cell,
+//                        CardListActivity.FlashCardViewHolder.class,
+//                        databaseReference.child("flashCards")
+//                ) {
+//                    @Override
+//                    protected void populateViewHolder(CardListActivity.FlashCardViewHolder viewHolder, FlashCard model, int position) {
+//                        final String flashCardId = getRef(position).getKey().toString();
+//
+//                        final int currentCardIndex = flashCardIds.indexOf(flashCardId);
+//
+//                        viewHolder.setName(model.getName());
+//                        viewHolder.setStatusIcon(model.getStatus());
+//                        viewHolder.setColor(flashCardSetColor);
+//
+//                        viewHolder.mView.setOnClickListener(new View.OnClickListener() {
+//                            @Override
+//                            public void onClick(View view) {
+//                                Intent cardActivity = new Intent(CardListActivity.this, CardActivity.class);
+//                                cardActivity.putExtra("flashCardSetId", flashCardSetId);
+//                                cardActivity.putExtra("flashCardSetColor", flashCardSetColor);
+//                                cardActivity.putStringArrayListExtra("flashCardIds", flashCardIds);
+//                                cardActivity.putExtra("currentCardIndex", currentCardIndex);
+//                                startActivity(cardActivity);
+//                            }
+//                        });
+//                    }
+//                };
 
-                        final int currentCardIndex = flashCardIds.indexOf(flashCardId);
+//        cardListView.setAdapter(firebaseRecyclerAdapter);
 
-                        viewHolder.setName(model.getName());
-                        viewHolder.setStatusIcon(model.getStatus());
-                        viewHolder.setColor(flashCardSetColor);
 
-                        viewHolder.mView.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                Intent cardActivity = new Intent(CardListActivity.this, CardActivity.class);
-                                cardActivity.putExtra("flashCardSetId", flashCardSetId);
-                                cardActivity.putExtra("flashCardSetColor", flashCardSetColor);
-                                cardActivity.putStringArrayListExtra("flashCardIds", flashCardIds);
-                                cardActivity.putExtra("currentCardIndex", currentCardIndex);
-                                startActivity(cardActivity);
-                            }
-                        });
-                    }
-                };
-
-        cardListView.setAdapter(firebaseRecyclerAdapter);
     }
 
-    private ArrayList<String> generateFlashCardIds() {
+    private void generateFlashCardList() {
         // get list of FlashCardIds from database
-        final ArrayList<String> flashCardIds = new ArrayList<>();
         databaseReference.child("flashCards").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
                     for(DataSnapshot d : dataSnapshot.getChildren()) {
-                        flashCardIds.add(d.getKey());
+                        String flashCardId = d.getKey();
+                        FlashCard flashCard = d.getValue(FlashCard.class);
+                        flashCard.setId(flashCardId);
+                        flashCardList.add(flashCard);
+
+                        cardListViewAdapter.notifyDataSetChanged();
                     }
                 }
             }//onDataChange
@@ -140,7 +153,56 @@ public class CardListActivity extends AppCompatActivity {
         });
 
         // shuffle them
-        return flashCardIds;
+    }
+
+    class CardListViewAdapter extends RecyclerView.Adapter<FlashCardViewHolder> {
+        private List<FlashCard> flashCardList;
+        private String flashCardSetId;
+        private String flashCardSetColor;
+
+        public CardListViewAdapter(List<FlashCard> flashCardList, String flashCardSetId, String flashCardSetColor) {
+            this.flashCardList = flashCardList;
+            this.flashCardSetId = flashCardSetId;
+            this.flashCardSetColor = flashCardSetColor;
+        }
+
+        @Override
+        public FlashCardViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            View itemView = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.flashcard_cell, parent, false);
+
+            return new FlashCardViewHolder(itemView);
+        }
+
+        @Override
+        public void onBindViewHolder(FlashCardViewHolder viewHolder, int position) {
+            final String flashCardId = flashCardList.get(position).getId();
+
+            FlashCard model = flashCardList.get(position);
+
+            final int currentCardIndex = position;
+
+            viewHolder.setName(model.getName());
+            viewHolder.setStatusIcon(model.getStatus());
+            viewHolder.setColor(flashCardSetColor);
+
+            viewHolder.mView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent cardActivity = new Intent(CardListActivity.this, CardActivity.class);
+                    cardActivity.putExtra("flashCardSetId", flashCardSetId);
+                    cardActivity.putExtra("flashCardSetColor", flashCardSetColor);
+                    //cardActivity.putStringArrayListExtra("flashCardIds", flashCardIds);
+                    cardActivity.putExtra("currentCardIndex", currentCardIndex);
+                    startActivity(cardActivity);
+                }
+            });
+        }
+
+        @Override
+        public int getItemCount() {
+            return flashCardList.size();
+        }
     }
 
     public static class FlashCardViewHolder extends RecyclerView.ViewHolder{
