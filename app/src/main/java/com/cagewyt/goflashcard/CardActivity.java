@@ -177,11 +177,11 @@ public class CardActivity extends AppCompatActivity {
         }
         else if("Yellow".equals(color))
         {
-            cardView.setCardBackgroundColor(Color.parseColor("#f5cd79"));
+            cardView.setCardBackgroundColor(Color.parseColor("#f4df42"));
         }
         else
         {
-            cardView.setCardBackgroundColor(Color.parseColor("#f5cd79"));
+            cardView.setCardBackgroundColor(Color.parseColor("#f4df42"));
         }
     }
 

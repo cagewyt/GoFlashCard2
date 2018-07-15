@@ -73,23 +73,6 @@ public class CardListActivity extends AppCompatActivity {
             fab.hide();
         }
 
-        if(flashCardSetId != null) {
-            databaseReference = FirebaseDatabase.getInstance().getReference().child("FlashCardSets").child(flashCardSetId);
-            databaseReference.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    if (dataSnapshot.exists()) {
-                        FlashCardSet flashCardSet = dataSnapshot.getValue(FlashCardSet.class);
-                        flashCardSetColor = flashCardSet.getColor();
-                    }
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-                }
-            });
-        }
-
         cardListView = findViewById(R.id.card_list);
         cardListView.setHasFixedSize(true);
         cardListView.setLayoutManager(new GridLayoutManager(this, 3));
@@ -263,11 +246,11 @@ public class CardListActivity extends AppCompatActivity {
             }
             else if("Yellow".equals(color))
             {
-                cardView.setCardBackgroundColor(Color.parseColor("#f5cd79"));
+                cardView.setCardBackgroundColor(Color.parseColor("#f4df42"));
             }
             else
             {
-                cardView.setCardBackgroundColor(Color.parseColor("#f5cd79"));
+                cardView.setCardBackgroundColor(Color.parseColor("#f4df42"));
             }
         }
     }

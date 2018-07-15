@@ -64,7 +64,7 @@ public class CardSetListActivity extends AppCompatActivity {
                         databaseReference
                 ) {
                     @Override
-                    protected void populateViewHolder(FlashCardSetViewHolder viewHolder, FlashCardSet model, int position) {
+                    protected void populateViewHolder(final FlashCardSetViewHolder viewHolder, FlashCardSet model, int position) {
                         final String flashCardSetKey = getRef(position).getKey().toString();
 
                         viewHolder.setName(model.getName());
@@ -75,6 +75,7 @@ public class CardSetListActivity extends AppCompatActivity {
                             public void onClick(View view) {
                                 Intent cardListActivity = new Intent(CardSetListActivity.this, CardListActivity.class);
                                 cardListActivity.putExtra("flashCardSetId", flashCardSetKey);
+                                cardListActivity.putExtra("flashCardSetColor", viewHolder.color);
                                 startActivity(cardListActivity);
                             }
                         });
@@ -86,10 +87,12 @@ public class CardSetListActivity extends AppCompatActivity {
 
     public static class FlashCardSetViewHolder extends RecyclerView.ViewHolder{
         View mView;
+        String color;
         public FlashCardSetViewHolder(View itemView)
         {
             super(itemView);
             mView = itemView;
+
         }
 
         public void setName(String name)
@@ -115,8 +118,10 @@ public class CardSetListActivity extends AppCompatActivity {
             taskName.setText(name);
         }
 
-        public void setColor(String color)
+        public void setColor(String itemColor)
         {
+            color = itemColor;
+
             CardView cardView = mView.findViewById(R.id.cardDisk);
             if("Blue".equals(color))
             {
@@ -132,11 +137,11 @@ public class CardSetListActivity extends AppCompatActivity {
             }
             else if("Yellow".equals(color))
             {
-                cardView.setCardBackgroundColor(Color.parseColor("#f5cd79"));
+                cardView.setCardBackgroundColor(Color.parseColor("#f4df42"));
             }
             else
             {
-                cardView.setCardBackgroundColor(Color.parseColor("#f5cd79"));
+                cardView.setCardBackgroundColor(Color.parseColor("#f4df42"));
             }
         }
     }
