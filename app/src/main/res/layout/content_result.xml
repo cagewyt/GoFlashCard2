@@ -1,20 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    android:orientation="vertical"
+    android:background="@drawable/bg"
+    android:weightSum="10"
     tools:context=".ResultActivity"
     tools:showIn="@layout/activity_result">
 
-    <TextView
-        android:id="@+id/knownPercentage"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="TextView"
-        android:textSize="24dp"
-        tools:layout_editor_absoluteX="163dp"
-        tools:layout_editor_absoluteY="246dp"
-        tools:text="100%" />
-</android.support.constraint.ConstraintLayout>
+    <RelativeLayout
+        android:layout_weight="3"
+        android:layout_width="match_parent"
+        android:layout_height="0dp">
+
+        <TextView
+            android:text="Mission Complete"
+            android:textSize="32sp"
+            android:textColor="@android:color/white"
+            android:layout_centerInParent="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_weight="4"
+        android:layout_width="match_parent"
+        android:layout_height="0dp">
+
+        <TextView
+            android:id="@+id/knownPercentage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_margin="30dp"
+            android:text="TextView"
+            android:textAlignment="center"
+            android:textColor="#3dc1d3"
+            android:textSize="24dp" />
+    </RelativeLayout>
+
+
+</LinearLayout>

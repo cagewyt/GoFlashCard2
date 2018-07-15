@@ -23,8 +23,6 @@ public class ResultActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_result);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
 
         flashCardSetId = getIntent().getExtras().getString("flashCardSetId");
 
@@ -66,7 +64,8 @@ public class ResultActivity extends AppCompatActivity {
             percentage = 99;
         }
 
-        knownPercentageText.setText((int)percentage+"%");
+        String text = "You have completed "+(int)percentage + "% of cards in this list.";
+        knownPercentageText.setText(text);
         return;
     }
 //    private void calculateKnownPercentage(final TextView knownPercentageText) {
