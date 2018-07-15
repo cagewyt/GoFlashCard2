@@ -46,6 +46,8 @@ public class CardActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_card);
 
+        CardActivity.this.setTitle("Card");
+
         if(flashCardSetId == null) {
             flashCardSetId = getIntent().getExtras().getString("flashCardSetId");
         }
