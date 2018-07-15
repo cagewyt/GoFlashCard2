@@ -2,10 +2,18 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.cagewyt.goflashcard.MainActivity">
+
+    <item
+        android:id="@+id/favourite"
+        android:icon="@drawable/ic_favorite_border"
+        android:orderInCategory="101"
+        android:title="Favourite"
+        app:showAsAction="always" />
+
     <item
         android:id="@+id/delete"
-        android:orderInCategory="101"
-        android:title="Add Task"
+        android:orderInCategory="102"
+        android:title="Delete"
         app:showAsAction="always"
         android:icon="@drawable/ic_delete"/>
 </menu>

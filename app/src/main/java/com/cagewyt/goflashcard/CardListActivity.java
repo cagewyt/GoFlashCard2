@@ -278,6 +278,8 @@ public class CardListActivity extends AppCompatActivity {
         if(flashCardSetId != null) {
             // Inflate the menu; this adds items to the action bar if it is present.
             getMenuInflater().inflate(R.menu.menu_main, menu);
+            MenuItem item = menu.findItem(R.id.favourite);
+            item.setVisible(false);
             return true;
         }
         else
@@ -291,11 +293,7 @@ public class CardListActivity extends AppCompatActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-        else if (id == R.id.delete) {
+        if (id == R.id.delete) {
             //Delete the current card set
             deleteCardSet();
 
